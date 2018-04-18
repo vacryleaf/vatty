@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vacry.vatty.mapper.UserMapper">
+
+	<resultMap id="ResultMap" type="com.vacry.vatty.vo.UserVO" >
+        <id column="ID" property="id" jdbcType="BIGINT" />
+        <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <select id="countAll" resultType="Long">
+    	SELECT 
+    	    COUNT(1) 
+    	FROM 
+    		user
+    </select>
+    
+    <select id="findAll" resultMap="ResultMap" parameterType="com.vacry.vatty.dto.UserDTO">
+    	SELECT 
+    	    ID,
+		    USERNAME
+		FROM 
+		    user
+      	LIMIT ${pageNumber * pageSize - pageSize},${pageSize}
+    </select>
+    
+    <insert id="insert" parameterType="com.vacry.vatty.model.User">
+		  INSERT INTO user (
+			  USERNAME,
+			  PASSWORD
+		  )
+		  VALUES 
+		  (
+		  	#{username},
+		  	#{password}
+		  )
+	</insert>
+	
+    <select id="login" resultMap="ResultMap">
+		  SELECT 
+		      ID,
+		      USERNAME
+		  FROM 
+		      user
+		  WHERE
+		      USERNAME=#{username} AND
+		      PASSWORD=#{password}
+	</select>
+    
+    <update id="update" parameterType="com.vacry.vatty.model.User">
+	  UPDATE user
+		<set>
+			<if test="username !=null">USERNAME=#{username},</if>
+	        <if test="password !=null">PASSWORD=#{password},</if>
+		</set>
+	  WHERE ID = #{id}
+	</update>
+</mapper>
